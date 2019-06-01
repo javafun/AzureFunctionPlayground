@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.WindowsAzure.Storage.Table;
+using System;
 
 namespace ServerlessFunc
 {
@@ -17,6 +18,13 @@ namespace ServerlessFunc
 
     public class UpdateTodoModel
     {
+        public string TaskDescription { get; set; }
+        public bool IsCompleted { get; set; }
+    }
+
+    public class TodoTableEntity : TableEntity
+    {
+        public DateTime CreatedTime { get; set; }
         public string TaskDescription { get; set; }
         public bool IsCompleted { get; set; }
     }
