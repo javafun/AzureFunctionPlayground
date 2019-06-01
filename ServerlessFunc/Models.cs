@@ -5,7 +5,7 @@ namespace ServerlessFunc
     public class Todo
     {
         public string Id { get; set; } = Guid.NewGuid().ToString("N");
-        public string Description { get; set; }
+        public string TaskDescription { get; set; }
         public DateTime CreatedTime { get; set; } = DateTime.UtcNow;
         public bool IsCompleted { get; set; }
     }

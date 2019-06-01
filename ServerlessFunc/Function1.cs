@@ -25,7 +25,7 @@ namespace ServerlessFunc
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             var input = JsonConvert.DeserializeObject<CreateTodoModel>(requestBody);
 
-            var todo = new Todo { Description = input.TaskDescription };
+            var todo = new Todo { TaskDescription = input.TaskDescription };
             items.Add(todo);
 
             return new OkObjectResult(todo);
@@ -78,7 +78,7 @@ namespace ServerlessFunc
             todo.IsCompleted = updated.IsCompleted;
 
             if (!string.IsNullOrWhiteSpace(updated.TaskDescription))
-                todo.Description = updated.TaskDescription;
+                todo.TaskDescription = updated.TaskDescription;
 
             return new OkObjectResult(todo);
         }
