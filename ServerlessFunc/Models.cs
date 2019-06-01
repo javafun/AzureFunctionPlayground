@@ -28,4 +28,30 @@ namespace ServerlessFunc
         public string TaskDescription { get; set; }
         public bool IsCompleted { get; set; }
     }
+
+    public static class Mappings
+    {
+        public static TodoTableEntity ToTableEntity(this Todo todo)
+        {
+            return new TodoTableEntity
+            {
+                CreatedTime = todo.CreatedTime,
+                TaskDescription = todo.TaskDescription,
+                IsCompleted = todo.IsCompleted,
+                PartitionKey = "TODO",
+                RowKey = todo.Id
+            };
+        }
+
+        public static Todo ToTodo(this TodoTableEntity todoTableEntity)
+        {
+            return new Todo
+            {
+                Id = todoTableEntity.RowKey,
+                TaskDescription = todoTableEntity.TaskDescription,
+                IsCompleted = todoTableEntity.IsCompleted,
+                CreatedTime = todoTableEntity.CreatedTime
+            };
+        }
+    }
 }
