@@ -21,6 +21,7 @@ namespace ServerlessFunc
         public static async Task<IActionResult> CreateTodo(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "todo")]HttpRequest req,
             [Table("todo", Connection = "AzureWebJobsStorage")]IAsyncCollector<TodoTableEntity> todoTable,
+            [Queue("todo", Connection = "AzureWebJobsStorage")]IAsyncCollector<TodoTableEntity> todoQueue,
             TraceWriter log)
         {
             log.Info("Creating a new todo list item");
@@ -31,7 +32,7 @@ namespace ServerlessFunc
             var todo = new Todo { TaskDescription = input.TaskDescription };
 
             await todoTable.AddAsync(todo.ToTableEntity());
-
+            await todoQueue.AddAsync(todo.ToTableEntity());
             return new OkObjectResult(todo);
         }
 
