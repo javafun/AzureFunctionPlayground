@@ -2,11 +2,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.Azure.WebJobs.Host;
+using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 using Newtonsoft.Json;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -20,11 +19,11 @@ namespace ServerlessFunc
         [FunctionName("CreateTodo")]
         public static async Task<IActionResult> CreateTodo(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "todo")]HttpRequest req,
-            [Table("todo", Connection = "AzureWebJobsStorage")]IAsyncCollector<TodoTableEntity> todoTable,
-            [Queue("todo", Connection = "AzureWebJobsStorage")]IAsyncCollector<TodoTableEntity> todoQueue,
-            TraceWriter log)
+            [Table("todos", Connection = "AzureWebJobsStorage")]IAsyncCollector<TodoTableEntity> todoTable,
+            [Queue("todos", Connection = "AzureWebJobsStorage")]IAsyncCollector<TodoTableEntity> todoQueue,
+            ILogger log)
         {
-            log.Info("Creating a new todo list item");
+            log.LogInformation("Creating a new todo list item");
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             var input = JsonConvert.DeserializeObject<CreateTodoModel>(requestBody);
@@ -39,11 +38,11 @@ namespace ServerlessFunc
         [FunctionName("GetTodos")]
         public static async Task<IActionResult> GetTodos(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "todo")]HttpRequest req,
-            [Table("todo", Connection = "AzureWebJobsStorage")]CloudTable todoTable,
-            TraceWriter log)
+            [Table("todos", Connection = "AzureWebJobsStorage")]CloudTable todoTable,
+            ILogger log)
         {
 
-            log.Info("Getting todo list items");
+            log.LogInformation("Getting todo list items");
             var query = new TableQuery<TodoTableEntity>();
             var segament = await todoTable.ExecuteQuerySegmentedAsync(query, null);
 
@@ -53,14 +52,14 @@ namespace ServerlessFunc
         [FunctionName("GetTodoById")]
         public static IActionResult GetTodoById(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "todo/{id}")]HttpRequest req,
-            [Table("todo", "TODO", "{id}", Connection = "AzureWebJobsStorage")]TodoTableEntity todo,
-            TraceWriter log, string id)
+            [Table("todos", "TODO", "{id}", Connection = "AzureWebJobsStorage")]TodoTableEntity todo,
+            ILogger log, string id)
         {
-            log.Info("Getting todo item by id");
+            log.LogInformation("Getting todo item by id");
 
             if (todo == null)
             {
-                log.Info($"Item {id} not found");
+                log.LogInformation($"Item {id} not found");
                 return new NotFoundResult();
             }
 
@@ -70,11 +69,11 @@ namespace ServerlessFunc
         [FunctionName("UpdateTodo")]
         public static async Task<IActionResult> UpdateTodo(
             [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "todo/{id}")] HttpRequest req,
-            [Table("todo", Connection = "AzureWebJobsStorage")]CloudTable todoTable,
-            TraceWriter log, string id)
+            [Table("todos", Connection = "AzureWebJobsStorage")]CloudTable todoTable,
+            ILogger log, string id)
         {
 
-            log.Info("Updating an existing todo item");
+            log.LogInformation("Updating an existing todo item");
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 
@@ -101,10 +100,10 @@ namespace ServerlessFunc
         [FunctionName("DeleteTodo")]
         public static async Task<IActionResult> DeleteTodo(
             [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "todo/{id}")]HttpRequest req,
-            [Table("todo", Connection = "AzureWebJobsStorage")]CloudTable todoTable,
-            TraceWriter log, string id)
+            [Table("todos", Connection = "AzureWebJobsStorage")]CloudTable todoTable,
+            ILogger log, string id)
         {
-            log.Info("Deleting an existing todo item");
+            log.LogInformation("Deleting an existing todo item");
 
             var deleteOperation = TableOperation.Delete(
                 new TableEntity
@@ -122,11 +121,7 @@ namespace ServerlessFunc
             {
                 return new NotFoundResult();
             }
-
-
             return new OkResult();
         }
-
-
     }
 }

@@ -10,7 +10,7 @@ namespace ServerlessFunc
     {
         [FunctionName("ScheduledFunction")]
         public static async Task Run([TimerTrigger("0 */2 * * * *")]TimerInfo myTimer,
-            [Table("todo", Connection = "AzureWebJobsStorage")]CloudTable todoTable,
+            [Table("todos", Connection = "AzureWebJobsStorage")]CloudTable todoTable,
             ILogger log)
         {
             var query = new TableQuery<TodoTableEntity>();
