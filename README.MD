@@ -14,7 +14,7 @@
             "CORS": "*"
         }
     }
-```
+   ```
 3. Build and run the solution.
 4. Run `Index.html` from `TodoWebSite` folder.
 
