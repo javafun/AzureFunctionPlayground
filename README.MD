@@ -1,7 +1,8 @@
-# How to use this lab demo
+## How to use this lab demo
 
+> **Note:** To run this solution successfully, you'll need to have `Azure Storage Emulator` installed and configured correctly.
 1. Check out the repo to your preferred location.
-2. Add `local.settings.json` to your project root with the following settings.
+2. Add `local.settings.json` to your project root folder `ServerlessFunc` with the following settings.
     ```json
     {
         "IsEncrypted": false,
