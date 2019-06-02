@@ -16,5 +16,5 @@
     }
 ```
 3. Build and run the solution.
-4. Open `Index.html` from `TodoWebSite` folder.
+4. Run `Index.html` from `TodoWebSite` folder.
 
